@@ -1,0 +1,12 @@
+node_modules/
+.env
+*.pptx
+*.pdf
+app/
+landing/
+slides/
+build_deck.py
+build_pptx.py
+build_pptx_v2.py
+pitch-spec.json
+pitch-foco.pptx

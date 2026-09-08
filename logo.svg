@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 140" width="400" height="140">
+  <defs>
+    <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5C842"/>
+      <stop offset="100%" stop-color="#FF9A76"/>
+    </linearGradient>
+    <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00B894"/>
+      <stop offset="100%" stop-color="#00CEC9"/>
+    </linearGradient>
+    <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FD79A8"/>
+      <stop offset="100%" stop-color="#E84393"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer glow -->
+  <circle cx="55" cy="55" r="42" fill="none" stroke="#F5C842" stroke-width="0.5" opacity="0.2"/>
+
+  <!-- Sun rays (8) -->
+  <g stroke="url(#sg)" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7">
+    <line x1="55" y1="14" x2="55" y2="5"/>
+    <line x1="55" y1="96" x2="55" y2="105"/>
+    <line x1="14" y1="55" x2="5" y2="55"/>
+    <line x1="96" y1="55" x2="105" y2="55"/>
+    <line x1="26" y1="26" x2="19" y2="19"/>
+    <line x1="84" y1="26" x2="91" y2="19"/>
+    <line x1="26" y1="84" x2="19" y2="91"/>
+    <line x1="84" y1="84" x2="91" y2="91"/>
+  </g>
+
+  <!-- Sun circle -->
+  <circle cx="55" cy="55" r="24" fill="url(#sg)"/>
+
+  <!-- Heart inside sun -->
+  <path d="M55 70 C55 70, 37 60, 37 50 C37 44, 42 40, 48 43 L55 52 L62 43 C68 40, 73 44, 73 50 C73 60, 55 70, 55 70Z" fill="#fff" opacity="0.9"/>
+
+  <!-- Leaf sprout -->
+  <path d="M73 32 C73 32, 85 20, 92 24 C99 28, 90 40, 90 40" fill="url(#lg)" opacity="0.65" stroke="url(#lg)" stroke-width="1.2"/>
+  <path d="M90 40 C84 33, 82 27, 73 32" fill="none" stroke="url(#lg)" stroke-width="0.8" opacity="0.4"/>
+
+  <!-- VIDA -->
+  <text x="115" y="52" font-family="Inter,system-ui,sans-serif" font-weight="800" font-size="40" fill="#F5C842" letter-spacing="3">VIDA</text>
+
+  <!-- POSITIVA -->
+  <text x="115" y="90" font-family="Inter,system-ui,sans-serif" font-weight="300" font-size="26" fill="#FFFFFF" letter-spacing="5">POSITIVA</text>
+
+  <!-- Tagline -->
+  <circle cx="115" cy="105" r="2" fill="#FD79A8"/>
+  <text x="123" y="108" font-family="Inter,system-ui,sans-serif" font-weight="400" font-size="8.5" fill="#777" letter-spacing="1.5">POSITIVIDADE MENTAL DIÁRIA</text>
+</svg>

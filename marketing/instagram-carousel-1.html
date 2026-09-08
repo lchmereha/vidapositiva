@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vida Positiva - 5 Sinais</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#08080d;--gold:#F5C842;--glass:rgba(255,255,255,.06);--border:rgba(255,255,255,.12);--text:#eee;--text2:#aaa}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:40px 0}
+.page-title{color:var(--gold);font-size:14px;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;opacity:.8}
+.carousel{width:400px;position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--border);background:var(--bg);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.slide{width:400px;height:620px;padding:32px;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;overflow:hidden}
+.slide::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(245,200,66,.08),transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(245,200,66,.05),transparent 50%);pointer-events:none}
+.slide-num{position:absolute;top:16px;right:20px;font-size:12px;color:var(--text2);font-weight:600;letter-spacing:1px;z-index:2}
+.logo{position:absolute;top:16px;left:20px;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:1px;z-index:2}
+.prev,.next{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:var(--glass);border:1px solid var(--border);color:var(--gold);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;backdrop-filter:blur(8px);transition:background .2s}
+.prev:hover,.next:hover{background:rgba(245,200,66,.15)}
+.prev{left:-8px}.next{right:-8px}
+.dots{display:flex;gap:6px;justify-content:center;padding:16px 0}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all .3s}
+.dot.active{background:var(--gold);width:20px;border-radius:3px}
+.icon{font-size:48px;margin-bottom:16px;filter:drop-shadow(0 0 12px rgba(245,200,66,.4))}
+h2{font-size:22px;font-weight:700;line-height:1.3;margin-bottom:12px;color:var(--gold)}
+h3{font-size:18px;font-weight:700;line-height:1.3;margin-bottom:12px}
+p{font-size:15px;color:var(--text2);line-height:1.6;max-width:300px}
+.glass{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:20px;backdrop-filter:blur(12px);width:100%;text-align:left;margin-top:16px}
+.glass h4{color:var(--gold);font-size:16px;margin-bottom:8px}
+.glass ul{list-style:none;padding:0}
+.glass li{padding:6px 0;font-size:14px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.glass li::before{content:'✦';color:var(--gold);font-size:10px}
+.cta-btn{background:var(--gold);color:#000;font-weight:700;font-size:15px;padding:14px 32px;border-radius:30px;border:none;cursor:pointer;margin-top:16px;transition:transform .2s,box-shadow .2s}
+.cta-btn:hover{transform:scale(1.05);box-shadow:0 8px 24px rgba(245,200,66,.3)}
+.badges{display:flex;gap:10px;margin-top:12px;justify-content:center}
+.badge{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:11px;color:var(--text2);backdrop-filter:blur(8px)}
+.swipe-hint{position:absolute;bottom:56px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--text2);opacity:.5}
+</style>
+</head>
+<body>
+<p class="page-title">Vida Positiva · Instagram Carousel</p>
+<div class="carousel" id="c1">
+<div class="logo">VIDA POSITIVA</div>
+
+<div class="slide" data-slide="1">
+<div class="slide-num">1/8</div>
+<div class="icon">✨</div>
+<p style="font-size:12px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;font-weight:600">Você sabia?</p>
+<h2>5 sinais que você precisa de uma rotina de positividade</h2>
+<p style="margin-top:12px">Se identificou com algum? Seu cérebro precisa de ajuda — e ela cabe em 3 minutos por dia.</p>
+</div>
+
+<div class="slide" data-slide="2">
+<div class="slide-num">2/8</div>
+<div class="icon">🌧️</div>
+<h3>Acorda já se sentindo mal</h3>
+<p class="glass">Sem motivação, sem energia. O dia já começa pesado antes mesmo de sair da cama. A positividade não é forçar um sorriso — é construir o hábito de começar melhor.</p>
+</div>
+
+<div class="slide" data-slide="3">
+<div class="slide-num">3/8</div>
+<div class="icon">🔄</div>
+<h3>Pensamentos repetitivos e negativos</h3>
+<p class="glass">"Não vou conseguir", "Deu ruim". Sua mente rebloqueia no mesmo loop. Uma rotina de positividade quebra esse padrão e treina seu cérebro para ver oportunidades.</p>
+</div>
+
+<div class="slide" data-slide="4">
+<div class="slide-num">4/8</div>
+<div class="icon">😤</div>
+<h3>Irritabilidade constante</h3>
+<p class="glass">Pessoa te olhou torto? Já explodiu. O impacto emocional dos pequenos eventos aumenta quando a base emocional não está firme.</p>
+</div>
+
+<div class="slide" data-slide="5">
+<div class="slide-num">5/8</div>
+<div class="icon">😴</div>
+<h3>Dificuldade para dormir</h3>
+<p class="glass">A ansiedade da noite não deixa sua mente desligar. Uma rotina de gratidão + reflexão antes de dormir reduz cortisol e melhora o sono.</p>
+</div>
+
+<div class="slide" data-slide="6">
+<div class="slide-num">6/8</div>
+<div class="icon">📱</div>
+<h3>Vive no automático</h3>
+<p class="glass">Acordar, trabalhar, dormir. Repetir. Sem presença, sem propósito. Uma rotina de positividade te traz de volta ao agora e te reconecta com o que importa.</p>
+</div>
+
+<div class="slide" data-slide="7">
+<div class="slide-num">7/8</div>
+<div class="icon">💡</div>
+<h2>O Vida Positiva resolve isso</h2>
+<p>3 minutos por dia. Manhã, dia e noite. Gratidão, foco e reflexão guiada.</p>
+<div class="glass">
+<h4>O que você ganha:</h4>
+<ul>
+<li>7 minutos por dia, não mais</li>
+<li>Treino de gratidão diário</li>
+<li>Planejamento focado</li>
+<li>Reflexão noturna guiada</li>
+</ul>
+</div>
+</div>
+
+<div class="slide" data-slide="8">
+<div class="slide-num">8/8</div>
+<div class="icon">🧡</div>
+<h2>Comece hoje. Grátis.</h2>
+<p>Baixe o Vida Positiva e transforme sua rotina em 3 minutos por dia.</p>
+<div class="badges">
+<div class="badge">🍎 App Store</div>
+<div class="badge">▶️ Google Play</div>
+</div>
+<div class="swipe-hint">← deslize para ver mais →</div>
+</div>
+
+<button class="prev" onclick="go(-1)">‹</button>
+<button class="next" onclick="go(1)">›</button>
+<div class="dots" id="dots"></div>
+</div>
+
+<script>
+var TOTAL=8, cur=1;
+var dotsEl=document.getElementById('dots');
+for(var i=1;i<=TOTAL;i++){var d=document.createElement('div');d.className='dot'+(i===1?' active':'');d.setAttribute('data-n',i);d.onclick=function(){jump(parseInt(this.getAttribute('data-n')))};dotsEl.appendChild(d)}
+function jump(n){
+  var slides=document.querySelectorAll('#c1 .slide');
+  for(var s=0;s<slides.length;s++) slides[s].style.display=(n===parseInt(slides[s].getAttribute('data-slide')))?'flex':'none';
+  var dd=document.querySelectorAll('#c1 .dot');
+  for(var d=0;d<dd.length;d++) dd[d].classList.toggle('active',d+1===n);
+  cur=n;
+}
+function go(dir){var n=cur+dir;if(n<1)n=TOTAL;if(n>TOTAL)n=1;jump(n)}
+document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')go(-1);if(e.key==='ArrowRight')go(1)});
+var tx=0;
+document.getElementById('c1').addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
+document.getElementById('c1').addEventListener('touchend',function(e){var diff=tx-e.changedTouches[0].clientX;if(Math.abs(diff)>40)go(diff>0?1:-1)},{passive:true});
+jump(1);
+</script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Vida Positiva</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header -->
+    <div class="app-header">
+      <div class="logo">☀️ Vida <span>Positiva</span></div>
+      <div class="date" id="today-date"></div>
+      <button class="user-btn" onclick="doLogout()" title="Sair">🚪</button>
+    </div>
+
+    <!-- Focus Banner -->
+    <div class="focus-banner" id="focus-banner" style="display:none">
+      <div class="focus-label">🎯 Seu foco de hoje</div>
+      <div class="focus-text" id="focus-text"></div>
+    </div>
+
+    <!-- Gratitude Section -->
+    <div class="section" id="sec-gratitude">
+      <div class="section-header">
+        <h2>🙏 Gratidão</h2>
+        <span class="done-badge" id="grat-done" style="display:none">✓ Salvo</span>
+      </div>
+      <div class="grat-inputs">
+        <span class="grat-num">1</span>
+        <input type="text" id="g1" placeholder="Pela qual você é grata(o) hoje..." maxlength="280">
+        <span class="grat-num">2</span>
+        <input type="text" id="g2" placeholder="Outra coisa que te faz bem..." maxlength="280">
+        <span class="grat-num">3</span>
+        <input type="text" id="g3" placeholder="Mais uma... o que tem sido bom?" maxlength="280">
+      </div>
+    </div>
+
+    <!-- Focus Section -->
+    <div class="section" id="sec-focus">
+      <div class="section-header">
+        <h2>🎯 Foco do Dia</h2>
+      </div>
+      <input type="text" id="focus-input" class="focus-input" placeholder="Hoje estou focado(a) em..." maxlength="280">
+    </div>
+
+    <!-- Tasks Section -->
+    <div class="section" id="sec-tasks">
+      <div class="section-header">
+        <h2>📋 Tarefas</h2>
+        <span class="done-badge" id="tasks-count"></span>
+      </div>
+      <ul class="task-list" id="task-list"></ul>
+      <div class="add-task-row">
+        <input type="text" id="new-task" placeholder="Nova tarefa..." maxlength="200">
+        <select id="new-priority">
+          <option value="media">Média</option>
+          <option value="alta">Alta</option>
+          <option value="baixa">Baixa</option>
+        </select>
+        <button class="btn-add" onclick="addTask()">+</button>
+      </div>
+    </div>
+
+    <!-- Evening Reflection -->
+    <div class="section" id="sec-reflection">
+      <div class="section-header">
+        <h2>🌙 Reflexão Noturna</h2>
+        <span class="done-badge" id="ref-done" style="display:none">✓ Salvo</span>
+      </div>
+      <div class="ref-stats" id="ref-stats"></div>
+      <textarea id="extra-wins" rows="2" placeholder="Conquistas extras não planejadas..."></textarea>
+      <textarea id="reflection-text" rows="3" placeholder="Reflexão do dia... como você se sente?"></textarea>
+      <div class="mood-picker">
+        <button class="mood-btn" data-mood="otimo" onclick="setMood(this)">😄</button>
+        <button class="mood-btn" data-mood="bom" onclick="setMood(this)">😊</button>
+        <button class="mood-btn selected" data-mood="neutro" onclick="setMood(this)">😐</button>
+        <button class="mood-btn" data-mood="ruim" onclick="setMood(this)">😔</button>
+        <button class="mood-btn" data-mood="pessimo" onclick="setMood(this)">😢</button>
+      </div>
+    </div>
+
+    <!-- Save All Button -->
+    <button class="btn-primary" style="margin-bottom:1.5rem" onclick="saveAll()">💾 Salvar Tudo</button>
+    <div id="save-msg" style="text-align:center;color:var(--green);min-height:1.5rem;margin-top:0.5rem"></div>
+  </div>
+
+  <!-- Nav Bar -->
+  <nav class="nav-bar">
+    <a href="/app" class="active"><span class="nav-icon">🏠</span>Hoje</a>
+    <a href="/timeline"><span class="nav-icon">📖</span>Timeline</a>
+  </nav>
+
+  <script>
+    let currentMood = 'neutro';
+
+    // Load today's data
+    async function init() {
+      const now = new Date();
+      document.getElementById('today-date').textContent = now.toLocaleDateString('pt-BR', {
+        weekday: 'long', day: 'numeric', month: 'long'
+      });
+
+      const [grat, foc, tasks, ref] = await Promise.all([
+        fetch('/api/gratitude/today').then(r => r.json()),
+        fetch('/api/focus/today').then(r => r.json()),
+        fetch('/api/tasks/today').then(r => r.json()),
+        fetch('/api/reflection/today').then(r => r.json())
+      ]);
+
+      if (grat) {
+        document.getElementById('g1').value = grat.item1 || '';
+        document.getElementById('g2').value = grat.item2 || '';
+        document.getElementById('g3').value = grat.item3 || '';
+        document.getElementById('grat-done').style.display = 'inline';
+      }
+
+      if (foc) {
+        document.getElementById('focus-input').value = foc.focus_text;
+        document.getElementById('focus-banner').style.display = 'block';
+        document.getElementById('focus-text').textContent = foc.focus_text;
+      }
+
+      renderTasks(tasks);
+
+      if (ref) {
+        document.getElementById('extra-wins').value = ref.extra_wins || '';
+        document.getElementById('reflection-text').value = ref.reflection_text || '';
+        setMoodByValue(ref.mood);
+        document.getElementById('ref-done').style.display = 'inline';
+      }
+
+      updateRefStats(tasks);
+    }
+
+    function renderTasks(tasks) {
+      const list = document.getElementById('task-list');
+      const done = tasks.filter(t => t.done).length;
+      document.getElementById('tasks-count').textContent = `${done}/${tasks.length}`;
+
+      list.innerHTML = tasks.map(t => `
+        <li class="task-item">
+          <button class="task-check ${t.done ? 'done' : ''}" onclick="toggleTask(${t.id})">
+            ${t.done ? '✓' : ''}
+          </button>
+          <span class="task-title ${t.done ? 'done' : ''}">${esc(t.title)}</span>
+          <span class="task-priority ${t.priority}">${t.priority}</span>
+          <button class="task-del" onclick="delTask(${t.id})">✕</button>
+        </li>
+      `).join('');
+    }
+
+    function updateRefStats(tasks) {
+      if (!tasks.length) return;
+      const done = tasks.filter(t => t.done).length;
+      document.getElementById('ref-stats').innerHTML =
+        `Tarefas: <strong>${done}</strong> de <strong>${tasks.length}</strong> concluídas`;
+    }
+
+    async function addTask() {
+      const input = document.getElementById('new-task');
+      const title = input.value.trim();
+      if (!title) return;
+      const priority = document.getElementById('new-priority').value;
+      await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, priority })
+      });
+      input.value = '';
+      const tasks = await fetch('/api/tasks/today').then(r => r.json());
+      renderTasks(tasks);
+      updateRefStats(tasks);
+    }
+
+    document.getElementById('new-task').addEventListener('keydown', e => {
+      if (e.key === 'Enter') addTask();
+    });
+
+    async function toggleTask(id) {
+      await fetch(`/api/tasks/${id}/toggle`, { method: 'PATCH' });
+      const tasks = await fetch('/api/tasks/today').then(r => r.json());
+      renderTasks(tasks);
+      updateRefStats(tasks);
+    }
+
+    async function delTask(id) {
+      await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+      const tasks = await fetch('/api/tasks/today').then(r => r.json());
+      renderTasks(tasks);
+      updateRefStats(tasks);
+    }
+
+    function setMood(btn) {
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      currentMood = btn.dataset.mood;
+    }
+
+    function setMoodByValue(val) {
+      currentMood = val || 'neutro';
+      document.querySelectorAll('.mood-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.mood === currentMood);
+      });
+    }
+
+    async function saveAll() {
+      const msg = document.getElementById('save-msg');
+
+      await Promise.all([
+        fetch('/api/gratitude', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            item1: document.getElementById('g1').value,
+            item2: document.getElementById('g2').value,
+            item3: document.getElementById('g3').value
+          })
+        }),
+        fetch('/api/focus', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ focus_text: document.getElementById('focus-input').value })
+        }),
+        fetch('/api/reflection', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            extra_wins: document.getElementById('extra-wins').value,
+            reflection_text: document.getElementById('reflection-text').value,
+            mood: currentMood,
+            tasks_completed: parseInt(document.getElementById('tasks-count').textContent) || 0,
+            tasks_total: parseInt(document.getElementById('tasks-count').textContent.split('/')[1]) || 0
+          })
+        })
+      ]);
+
+      msg.textContent = '✨ Tudo salvo! Bom dia.';
+      setTimeout(() => msg.textContent = '', 3000);
+
+      // Update focus banner
+      const foc = await fetch('/api/focus/today').then(r => r.json());
+      if (foc) {
+        document.getElementById('focus-banner').style.display = 'block';
+        document.getElementById('focus-text').textContent = foc.focus_text;
+      }
+
+      document.getElementById('grat-done').style.display = 'inline';
+      document.getElementById('ref-done').style.display = 'inline';
+    }
+
+    async function doLogout() {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/';
+    }
+
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    init();
+  </script>
+</body>
+</html>

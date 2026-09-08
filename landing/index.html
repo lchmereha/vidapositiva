@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vida Positiva — Sua Rotina de Bem-Estar em 3 Minutos</title>
+<meta name="description" content="Agenda diária, diário de gratidão, foco positivo e reflexão noturna. Transforme seus dias em 3 minutos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080d;--bg-card:rgba(255,255,255,.04);--bg-glass:rgba(255,255,255,.06);
+  --gold:#F5C842;--gold-dim:#c49f2e;--gold-glow:rgba(245,200,66,.25);
+  --text:#f0ece4;--text-dim:rgba(240,236,228,.55);--text-muted:rgba(240,236,228,.35);
+  --radius:20px;--radius-sm:12px;
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+/* ── Utility ── */
+.container{max-width:1120px;margin:0 auto;padding:0 24px}
+.section{padding:100px 0}
+.section-label{font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.section-label::before{content:'';width:24px;height:1px;background:var(--gold)}
+.section-title{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:800;line-height:1.15;margin-bottom:16px}
+.section-title span{color:var(--gold)}
+.section-subtitle{color:var(--text-dim);font-size:1.1rem;max-width:560px;line-height:1.7}
+/* ── Scroll Animations ── */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.12s}
+.reveal-delay-2{transition-delay:.24s}
+.reveal-delay-3{transition-delay:.36s}
+.reveal-delay-4{transition-delay:.48s}
+/* ── Navigation ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:background .3s,backdrop-filter .3s}
+.nav.scrolled{background:rgba(8,8,13,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-size:1.35rem;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.nav-logo .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold-glow)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-size:.875rem;color:var(--text-dim);font-weight:500;transition:color .25s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--gold);color:var(--bg);padding:10px 24px;border-radius:50px;font-weight:700;font-size:.875rem;border:none;cursor:pointer;transition:transform .2s,box-shadow .25s}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--gold-glow)}
+.nav-mobile-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.nav-mobile-toggle span{width:22px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+@media(max-width:768px){
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:rgba(8,8,13,.95);backdrop-filter:blur(20px);padding:24px;gap:20px;border-bottom:1px solid rgba(255,255,255,.06)}
+  .nav-links.open{display:flex}
+  .nav-mobile-toggle{display:flex}
+}
+/* ── Hero ── */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg::before{content:'';position:absolute;inset:-50%;width:200%;height:200%;background:radial-gradient(ellipse 600px 600px at 50% 40%,rgba(245,200,66,.12),transparent 70%),radial-gradient(ellipse 400px 400px at 70% 60%,rgba(168,130,255,.08),transparent 60%),radial-gradient(ellipse 500px 500px at 30% 70%,rgba(245,200,66,.06),transparent 60%);animation:heroPulse 8s ease-in-out infinite alternate}
+@keyframes heroPulse{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-2%,3%) scale(1.04)}100%{transform:translate(2%,-2%) scale(1)}}
+.hero-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 100%,rgba(8,8,13,.9),transparent 60%)}
+.hero-content{position:relative;z-index:1;text-align:center;max-width:720px;margin:0 auto;padding-top:80px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--bg-glass);border:1px solid rgba(255,255,255,.08);border-radius:50px;padding:8px 20px;font-size:.8rem;color:var(--text-dim);margin-bottom:32px;backdrop-filter:blur(10px)}
+.hero-badge .pulse{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero-title{font-size:clamp(2.8rem,6.5vw,4.5rem);font-weight:800;line-height:1.08;letter-spacing:-.03em;margin-bottom:24px}
+.hero-title .highlight{background:linear-gradient(135deg,var(--gold),#ffe082);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-subtitle{font-size:1.15rem;color:var(--text-dim);max-width:520px;margin:0 auto 40px;line-height:1.75}
+.hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--gold);color:var(--bg);padding:16px 36px;border-radius:50px;font-weight:700;font-size:1rem;border:none;cursor:pointer;transition:transform .25s,box-shadow .3s;position:relative;overflow:hidden}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.2));opacity:0;transition:opacity .3s}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(245,200,66,.35)}
+.btn-primary:hover::after{opacity:1}
+.btn-secondary{display:inline-flex;align-items:center;gap:10px;background:var(--bg-glass);color:var(--text);padding:16px 36px;border-radius:50px;font-weight:600;font-size:1rem;border:1px solid rgba(255,255,255,.1);cursor:pointer;backdrop-filter:blur(10px);transition:transform .25s,border-color .3s}
+.btn-secondary:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.2)}
+.hero-stats{display:flex;justify-content:center;gap:48px;padding-top:40px;border-top:1px solid rgba(255,255,255,.06)}
+.hero-stat strong{display:block;font-size:1.6rem;font-weight:800;color:var(--gold)}
+.hero-stat span{font-size:.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}
+/* ── Features ── */
+.features{background:linear-gradient(180deg,var(--bg) 0%,rgba(12,12,20,1) 100%)}
+.features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:48px}
+@media(max-width:900px){.features-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.features-grid{grid-template-columns:1fr}}
+.feature-card{background:var(--bg-glass);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:32px 28px;backdrop-filter:blur(12px);transition:transform .35s,border-color .35s,box-shadow .35s;position:relative;overflow:hidden}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(245,200,66,.3),transparent);opacity:0;transition:opacity .35s}
+.feature-card:hover{transform:translateY(-6px);border-color:rgba(245,200,66,.2);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.feature-card:hover::before{opacity:1}
+.feature-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(245,200,66,.15),rgba(245,200,66,.05));display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:20px;border:1px solid rgba(245,200,66,.12)}
+.feature-card h3{font-size:1.15rem;font-weight:700;margin-bottom:10px}
+.feature-card p{font-size:.9rem;color:var(--text-dim);line-height:1.65}
+.feature-tag{display:inline-block;margin-top:14px;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:600;padding:4px 10px;border:1px solid rgba(245,200,66,.2);border-radius:50px}
+/* ── How It Works ── */
+.how-it-works{position:relative}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:48px;align-items:start}
+@media(max-width:768px){.how-grid{grid-template-columns:1fr;gap:40px}}
+.how-side{position:relative}
+.how-side-title{font-size:1.1rem;font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.how-side-title .time-badge{font-size:.7rem;background:var(--bg-glass);border:1px solid rgba(255,255,255,.08);padding:4px 12px;border-radius:50px;color:var(--text-dim);font-weight:500}
+.how-steps{display:flex;flex-direction:column;gap:0}
+.how-step{display:flex;gap:20px;position:relative;padding-bottom:28px}
+.how-step:last-child{padding-bottom:0}
+.how-step-line{display:flex;flex-direction:column;align-items:center;gap:0}
+.how-step-dot{width:40px;height:40px;min-width:40px;border-radius:50%;background:var(--bg-glass);border:1px solid rgba(245,200,66,.2);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:var(--gold)}
+.how-step-connector{width:1px;flex:1;background:linear-gradient(180deg,rgba(245,200,66,.2),transparent);margin-top:4px}
+.how-step:last-child .how-step-connector{display:none}
+.how-step-content h4{font-size:.95rem;font-weight:600;margin-bottom:4px}
+.how-step-content p{font-size:.85rem;color:var(--text-dim);line-height:1.6}
+/* ── Pricing ── */
+.pricing{background:linear-gradient(180deg,rgba(12,12,20,1),var(--bg))}
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px;max-width:760px;margin-left:auto;margin-right:auto}
+@media(max-width:640px){.pricing-grid{grid-template-columns:1fr;max-width:400px}}
+.pricing-card{background:var(--bg-glass);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:40px 32px;backdrop-filter:blur(12px);position:relative;transition:transform .35s}
+.pricing-card.featured{border-color:rgba(245,200,66,.3);background:rgba(245,200,66,.04)}
+.pricing-card.featured::before{content:'MAIS POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--bg);font-size:.65rem;font-weight:700;letter-spacing:.1em;padding:4px 16px;border-radius:50px}
+.pricing-card:hover{transform:translateY(-4px)}
+.pricing-plan{font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;color:var(--text-muted);font-weight:600;margin-bottom:8px}
+.pricing-price{font-size:2.8rem;font-weight:800;margin-bottom:4px}
+.pricing-price .currency{font-size:1.2rem;vertical-align:super;font-weight:600;color:var(--gold)}
+.pricing-price .period{font-size:.9rem;color:var(--text-dim);font-weight:400}
+.pricing-note{font-size:.8rem;color:var(--text-muted);margin-bottom:28px}
+.pricing-features{list-style:none;margin-bottom:32px}
+.pricing-features li{display:flex;align-items:center;gap:10px;font-size:.9rem;padding:8px 0;color:var(--text-dim)}
+.pricing-features li .check{color:var(--gold);font-weight:700}
+.pricing-features li .cross{color:var(--text-muted);font-weight:700}
+.pricing-btn{width:100%;padding:14px;border-radius:50px;font-weight:700;font-size:.95rem;cursor:pointer;transition:transform .2s,box-shadow .3s;border:none}
+.pricing-btn.primary{background:var(--gold);color:var(--bg)}
+.pricing-btn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px var(--gold-glow)}
+.pricing-btn.secondary{background:rgba(255,255,255,.06);color:var(--text);border:1px solid rgba(255,255,255,.1)}
+.pricing-btn.secondary:hover{border-color:rgba(255,255,255,.2)}
+/* ── Testimonials ── */
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
+@media(max-width:900px){.testimonials-grid{grid-template-columns:1fr}}
+.testimonial-card{background:var(--bg-glass);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:32px 28px;backdrop-filter:blur(12px);transition:transform .35s}
+.testimonial-card:hover{transform:translateY(-4px)}
+.testimonial-stars{color:var(--gold);font-size:.85rem;margin-bottom:16px;letter-spacing:2px}
+.testimonial-text{font-size:.95rem;line-height:1.7;color:var(--text-dim);margin-bottom:20px;font-style:italic}
+.testimonial-author{display:flex;align-items:center;gap:12px}
+.testimonial-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ffe082);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:var(--bg)}
+.testimonial-name{font-size:.85rem;font-weight:600}
+.testimonial-role{font-size:.75rem;color:var(--text-muted)}
+/* ── CTA / Email Capture ── */
+.cta-section{text-align:center;position:relative}
+.cta-box{background:linear-gradient(135deg,rgba(245,200,66,.08),rgba(168,130,255,.05));border:1px solid rgba(245,200,66,.15);border-radius:var(--radius);padding:64px 40px;max-width:640px;margin:48px auto 0;backdrop-filter:blur(12px);position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(245,200,66,.1),transparent 60%);pointer-events:none}
+.cta-box h3{font-size:1.6rem;font-weight:800;margin-bottom:12px;position:relative}
+.cta-box p{color:var(--text-dim);margin-bottom:32px;font-size:.95rem;position:relative}
+.cta-form{display:flex;gap:12px;max-width:440px;margin:0 auto;position:relative}
+@media(max-width:480px){.cta-form{flex-direction:column}}
+.cta-form input{flex:1;padding:14px 20px;border-radius:50px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:var(--text);font-size:.9rem;font-family:var(--font);outline:none;transition:border-color .3s;backdrop-filter:blur(8px)}
+.cta-form input::placeholder{color:var(--text-muted)}
+.cta-form input:focus{border-color:var(--gold)}
+.cta-form button{padding:14px 28px;border-radius:50px;background:var(--gold);color:var(--bg);font-weight:700;font-size:.9rem;border:none;cursor:pointer;transition:transform .2s,box-shadow .3s;white-space:nowrap}
+.cta-form button:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--gold-glow)}
+/* ── Footer ── */
+.footer{border-top:1px solid rgba(255,255,255,.06);padding:60px 0 40px;margin-top:40px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+@media(max-width:768px){.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media(max-width:480px){.footer-grid{grid-template-columns:1fr}}
+.footer-brand p{color:var(--text-dim);font-size:.85rem;margin-top:12px;line-height:1.7;max-width:280px}
+.footer-col h4{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--text-muted);margin-bottom:16px;font-weight:600}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:10px}
+.footer-col a{font-size:.85rem;color:var(--text-dim);transition:color .25s}
+.footer-col a:hover{color:var(--gold)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid rgba(255,255,255,.04);font-size:.75rem;color:var(--text-muted)}
+@media(max-width:480px){.footer-bottom{flex-direction:column;gap:12px;text-align:center}}
+/* ── Particles (decorative) ── */
+.particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.particle{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0;animation:float linear infinite}
+@keyframes float{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:.6}90%{opacity:.6}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+</style>
+</head>
+<body>
+
+<!-- Particles -->
+<div class="particles" id="particles"></div>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo"><span class="dot"></span>vida positiva</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#funcionalidades">Funcionalidades</a></li>
+      <li><a href="#como-funciona">Como Funciona</a></li>
+      <li><a href="#planos">Planos</a></li>
+      <li><a href="#depoimentos">Depoimentos</a></li>
+    </ul>
+    <button class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Comece Grátis</button>
+    <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="container hero-content">
+    <div class="hero-badge reveal"><span class="pulse"></span>Transforme seus dias, um de cada vez</div>
+    <h1 class="hero-title reveal reveal-delay-1">Sua rotina de <br><span class="highlight">bem-estar em 3 minutos</span></h1>
+    <p class="hero-subtitle reveal reveal-delay-2">Agenda do dia, diário de gratidão, foco positivo e reflexão noturna — tudo em um só lugar. Comece e termine seu dia com intenção.</p>
+    <div class="hero-actions reveal reveal-delay-3">
+      <button class="btn-primary" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Começar Agora — É Grátis ↓</button>
+      <button class="btn-secondary" onclick="document.getElementById('como-funciona').scrollIntoView({behavior:'smooth'})">Como Funciona</button>
+    </div>
+    <div class="hero-stats reveal reveal-delay-4">
+      <div class="hero-stat"><strong>3 min</strong><span>por dia</span></div>
+      <div class="hero-stat"><strong>12.800+</strong><span>usuárias ativas</span></div>
+      <div class="hero-stat"><strong>4.9 ★</strong><span>App Store</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section features" id="funcionalidades">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Funcionalidades</div>
+      <h2 class="section-title">Tudo que você precisa, <span>nada que não precisa</span></h2>
+      <p class="section-subtitle">Quatro pilares que transformam sua rotina em uma experiência de bem-estar diário.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">📋</div>
+        <h3>Agenda do Dia</h3>
+        <p>Planeje seu dia com prioridades claras. Sem ruído, sem complexidade — só o que importa.</p>
+        <span class="feature-tag">Manhã</span>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">💛</div>
+        <h3>Diário de Gratidão</h3>
+        <p>Registre 3 coisas pelas quais você é grata. Mude o foco do que falta para o que sobra.</p>
+        <span class="feature-tag">Manhã</span>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon">✨</div>
+        <h3>Foco Positivo</h3>
+        <p>Afirmações e intenções personalizadas para moldar o dia com mentalidade de abundância.</p>
+        <span class="feature-tag">Manhã</span>
+      </div>
+      <div class="feature-card reveal reveal-delay-4">
+        <div class="feature-icon">🌙</div>
+        <h3>Resumo Noturno</h3>
+        <p>Reflexão guiada ao final do dia. Celebre conquistas, aprenda e durma em paz.</p>
+        <span class="feature-tag">Noite</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="section how-it-works" id="como-funciona">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Como Funciona</div>
+      <h2 class="section-title">Sua rotina em <span>2 momentos</span></h2>
+      <p class="section-subtitle">Manhã e noite. Três minutos no total. Simples assim.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-side reveal reveal-delay-1">
+        <div class="how-side-title">☀️ Rotina da Manhã <span class="time-badge">~2 min</span></div>
+        <div class="how-steps">
+          <div class="how-step">
+            <div class="how-step-line"><div class="how-step-dot">1</div><div class="how-step-connector"></div></div>
+            <div class="how-step-content"><h4>Defina suas prioridades</h4><p>Escolha até 3 tarefas que vão fazer a diferença hoje.</p></div>
+          </div>
+          <div class="how-step">
+            <div class="how-step-line"><div class="how-step-dot">2</div><div class="how-step-connector"></div></div>
+            <div class="how-step-content"><h4>Pratique a gratidão</h4><p>Escreva 3 coisas pelas quais você é grata agora.</p></div>
+          </div>
+          <div class="how-step">
+            <div class="how-step-line"><div class="how-step-dot">3</div></div>
+            <div class="how-step-content"><h4>Declare sua intenção</h4><p>Leia sua afirmação do dia e comece com propósito.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="how-side reveal reveal-delay-2">
+        <div class="how-side-title">🌙 Ritual da Noite <span class="time-badge">~1 min</span></div>
+        <div class="how-steps">
+          <div class="how-step">
+            <div class="how-step-line"><div class="how-step-dot">1</div><div class="how-step-connector"></div></div>
+            <div class="how-step-content"><h4>Resumo do dia</h4><p>Registre o que de melhor aconteceu. Uma frase basta.</p></div>
+          </div>
+          <div class="how-step">
+            <div class="how-step-line"><div class="how-step-dot">2</div><div class="how-step-connector"></div></div>
+            <div class="how-step-content"><h4>Reconquista</h4><p>Marque as tarefas que completou. Celebre cada uma.</p></div>
+          </div>
+          <div class="how-step">
+            <div class="how-step-line"><div class="how-step-dot">3</div></div>
+            <div class="how-step-content"><h4>Encerre com intenção</h4><p>Afirmação noturna para dormir com a cabeça tranquila.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="section pricing" id="planos">
+  <div class="container" style="text-align:center">
+    <div class="reveal" style="display:inline-flex;flex-direction:column;align-items:center">
+      <div class="section-label">Planos</div>
+      <h2 class="section-title">Comece <span>grátis</span>. Evolua quando quiser.</h2>
+      <p class="section-subtitle" style="text-align:center">Sem cartão. Sem compromisso. Cancele quando quiser.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal reveal-delay-1">
+        <div class="pricing-plan">Gratuito</div>
+        <div class="pricing-price"><span class="currency">R$</span>0 <span class="period">/mês</span></div>
+        <div class="pricing-note">Para sempre</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Agenda diária</li>
+          <li><span class="check">✓</span> Diário de gratidão</li>
+          <li><span class="cross">✗</span> Afirmações personalizadas</li>
+          <li><span class="cross">✗</span> Histórico ilimitado</li>
+          <li><span class="cross">✗</span> Resumo semanal</li>
+          <li><span class="cross">✗</span> Temas exclusivos</li>
+        </ul>
+        <button class="pricing-btn secondary">Baixar Grátis</button>
+      </div>
+      <div class="pricing-card featured reveal reveal-delay-2">
+        <div class="pricing-plan">Pro</div>
+        <div class="pricing-price"><span class="currency">R$</span>14.90 <span class="period">/mês</span></div>
+        <div class="pricing-note">ou R$ 99.90/ano (economize 44%)</div>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span> Tudo do plano gratuito</li>
+          <li><span class="check">✓</span> Afirmações personalizadas</li>
+          <li><span class="check">✓</span> Histórico ilimitado</li>
+          <li><span class="check">✓</span> Resumo semanal & mensal</li>
+          <li><span class="check">✓</span> Temas exclusivos</li>
+          <li><span class="check">✓</span> Lembretes inteligentes</li>
+        </ul>
+        <button class="pricing-btn primary">Assinar Pro</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section" id="depoimentos">
+  <div class="container">
+    <div class="reveal" style="text-align:center;display:inline-flex;flex-direction:column;align-items:center;width:100%">
+      <div class="section-label">Depoimentos</div>
+      <h2 class="section-title">O que nossas <span>usuárias</span> dizem</h2>
+      <p class="section-subtitle" style="text-align:center">Mais de 12 mil mulheres já transformaram suas rotinas.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal reveal-delay-1">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Em 2 semanas já senti diferença. Começo o dia com mais clareza e durmo melhor. O app é lindo e rápido — nem dá pra dizer que não tem tempo."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">M</div>
+          <div><div class="testimonial-name">Mariana Silva</div><div class="testimonial-role">Designer, São Paulo — 32 anos</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-2">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Passei anos tentando criar um hábito de journaling. O Vida Positiva finalmente fez sticks. 3 minutos, direto ao ponto, sem enrolação."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">A</div>
+          <div><div class="testimonial-name">Ana Beatriz Costa</div><div class="testimonial-role">Empreendedora, BH — 28 anos</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-3">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"O resumo noturno mudou como eu durmo. Antes eu carregava o dia na cabeça. Agora eu fecho e descanso. Simples, mas transformador."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">C</div>
+          <div><div class="testimonial-name">Camila Fernandes</div><div class="testimonial-role">Professora, Curitiba — 35 anos</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / Email Capture -->
+<section class="section cta-section" id="cta">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label" style="justify-content:center">Comece Hoje</div>
+      <h2 class="section-title" style="text-align:center">Seu dia mais <span>intencional</span> começa agora</h2>
+      <p class="section-subtitle" style="text-align:center;margin:0 auto">Digite seu e-mail e receba acesso antecipado ao Vida Positiva.</p>
+    </div>
+    <div class="cta-box reveal reveal-delay-1">
+      <h3>🌱 Entre na lista de espera</h3>
+      <p>Vagas limitadas. Primeiros 1.000 ganham 3 meses de Pro grátis.</p>
+      <form class="cta-form" onsubmit="event.preventDefault();this.querySelector('button').textContent='✓ Você está na lista!';this.querySelector('button').style.background='#22c55e';this.querySelector('input').disabled=true">
+        <input type="email" placeholder="Seu melhor e-mail" required aria-label="E-mail">
+        <button type="submit">Quero Acesso</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo"><span class="dot"></span>vida positiva</a>
+        <p>Sua rotina de bem-estar em 3 minutos por dia. Gratidão, foco e reflexão — tudo no seu bolso.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Produto</h4>
+        <ul>
+          <li><a href="#funcionalidades">Funcionalidades</a></li>
+          <li><a href="#planos">Planos</a></li>
+          <li><a href="#como-funciona">Como Funciona</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Companhia</h4>
+        <ul>
+          <li><a href="#">Sobre Nós</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Carreiras</a></li>
+          <li><a href="#">Contato</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacidade</a></li>
+          <li><a href="#">Termos de Uso</a></li>
+          <li><a href="#">Cookies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Vida Positiva. Todos os direitos reservados.</span>
+      <span>Feito com 💛 no Brasil</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Scroll reveal ──
+const reveals=document.querySelectorAll('.reveal');
+const revealObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revealObs.unobserve(e.target)}})
+},{threshold:.15});
+reveals.forEach(el=>revealObs.observe(el));
+
+// ── Nav scroll ──
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>40)});
+
+// ── Mobile menu ──
+document.getElementById('mobileToggle').addEventListener('click',()=>{document.getElementById('navLinks').classList.toggle('open')});
+
+// ── Particles ──
+(function(){const c=document.getElementById('particles');for(let i=0;i<30;i++){const p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDuration=(8+Math.random()*12)+'s';p.style.animationDelay=Math.random()*10+'s';p.style.width=p.style.height=(1+Math.random()*2)+'px';c.appendChild(p)}})();
+</script>
+</body>
+</html>

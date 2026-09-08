@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vida Positiva — Timeline</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <div class="app-header">
+      <div class="logo">☀️ Vida <span>Positiva</span></div>
+      <button class="user-btn" onclick="doLogout()" title="Sair">🚪</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-days">0</div>
+        <div class="stat-label">Dias registrados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-tasks">0%</div>
+        <div class="stat-label">Tarefas concluídas</div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div id="timeline"></div>
+  </div>
+
+  <nav class="nav-bar">
+    <a href="/app"><span class="nav-icon">🏠</span>Hoje</a>
+    <a href="/timeline" class="active"><span class="nav-icon">📖</span>Timeline</a>
+  </nav>
+
+  <script>
+    const typeEmoji = {
+      gratidao: '🙏',
+      foco: '🎯',
+      reflexao: '🌙'
+    };
+    const typeLabel = {
+      gratidao: 'Gratidão',
+      foco: 'Foco',
+      reflexao: 'Reflexão'
+    };
+
+    async function init() {
+      const data = await fetch('/api/timeline').then(r => r.json());
+
+      // Stats
+      document.getElementById('stat-days').textContent = data.stats.totalDays;
+      const pct = data.stats.totalTasks > 0
+        ? Math.round((data.stats.completedTasks / data.stats.totalTasks) * 100)
+        : 0;
+      document.getElementById('stat-tasks').textContent = pct + '%';
+
+      // Group by date
+      const grouped = {};
+      data.events.forEach(ev => {
+        if (!grouped[ev.date]) grouped[ev.date] = [];
+        grouped[ev.date].push(ev);
+      });
+
+      const container = document.getElementById('timeline');
+      if (Object.keys(grouped).length === 0) {
+        container.innerHTML = '<div class="section" style="text-align:center;color:var(--dim)"><p>Nenhum registro ainda.</p><p style="margin-top:0.5rem">Comece registrando sua gratidão no <a href="/app" style="color:var(--acc)">app principal</a>.</p></div>';
+        return;
+      }
+
+      let html = '';
+      for (const [date, events] of Object.entries(grouped)) {
+        const d = new Date(date + 'T12:00:00');
+        const dateStr = d.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
+
+        html += `<div class="tl-day"><div class="tl-date">${dateStr}</div>`;
+
+        events.forEach(ev => {
+          let content = '';
+          if (ev.type === 'gratidao') {
+            const g = ev.data;
+            const items = [g.item1, g.item2, g.item3].filter(Boolean);
+            content = items.map(i => `<div style="margin-bottom:0.2rem">• ${esc(i)}</div>`).join('');
+          } else if (ev.type === 'foco') {
+            content = `<em>"${esc(ev.data.focus_text)}"</em>`;
+          } else if (ev.type === 'reflexao') {
+            const r = ev.data;
+            const mood = { otimo:'😄', bom:'😊', neutro:'😐', ruim:'😔', pessimo:'😢' };
+            content = `<div>${mood[r.mood] || ''} ${r.tasks_completed}/${r.tasks_total} tarefas</div>`;
+            if (r.extra_wins) content += `<div style="margin-top:0.3rem;color:var(--green)">✨ ${esc(r.extra_wins)}</div>`;
+            if (r.reflection_text) content += `<div style="margin-top:0.3rem;font-style:italic">${esc(r.reflection_text)}</div>`;
+          }
+
+          html += `<div class="tl-event ${ev.type}">
+            <div class="tl-type">${typeEmoji[ev.type]} ${typeLabel[ev.type]}</div>
+            <div class="tl-content">${content}</div>
+          </div>`;
+        });
+
+        html += '</div>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    function esc(s) {
+      if (!s) return '';
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    async function doLogout() {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/';
+    }
+
+    init();
+  </script>
+</body>
+</html>
