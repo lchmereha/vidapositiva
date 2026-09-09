@@ -9,6 +9,7 @@ const focusRoutes = require('./routes/focus');
 const tasksRoutes = require('./routes/tasks');
 const reflectionRoutes = require('./routes/reflection');
 const timelineRoutes = require('./routes/timeline');
+const calendarRoutes = require('./routes/calendar');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -37,6 +38,7 @@ app.use('/api/focus', requireAuth, focusRoutes);
 app.use('/api/tasks', requireAuth, tasksRoutes);
 app.use('/api/reflection', requireAuth, reflectionRoutes);
 app.use('/api/timeline', requireAuth, timelineRoutes);
+app.use('/api/calendar', requireAuth, calendarRoutes);
 
 // Protected pages
 app.get('/app', requireAuth, (req, res) => {

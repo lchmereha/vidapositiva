@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../db');
 const router = express.Router();
 
+// GET /today — compat
 router.get('/today', (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
   const row = db.prepare(
@@ -10,14 +11,28 @@ router.get('/today', (req, res) => {
   res.json(row || null);
 });
 
+// GET /:date — gratidão de data específica
+router.get('/:date', (req, res) => {
+  const { date } = req.params;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return res.status(400).json({ error: 'Formato de data inválido' });
+  }
+  const row = db.prepare(
+    'SELECT * FROM gratitude WHERE user_id = ? AND date = ?'
+  ).get(req.session.userId, date);
+  res.json(row || null);
+});
+
+// POST / — aceita campo "date" (default: hoje)
 router.post('/', (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
-  const { item1, item2, item3 } = req.body;
+  const { item1, item2, item3, date: bodyDate } = req.body;
+  const d = bodyDate || today;
   db.prepare(
     `INSERT INTO gratitude (user_id, date, item1, item2, item3)
      VALUES (?, ?, ?, ?, ?)
      ON CONFLICT(user_id, date) DO UPDATE SET item1=excluded.item1, item2=excluded.item2, item3=excluded.item3`
-  ).run(req.session.userId, today, item1, item2, item3);
+  ).run(req.session.userId, d, item1 || '', item2 || '', item3 || '');
   res.json({ ok: true });
 });
 
