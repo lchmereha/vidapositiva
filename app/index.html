@@ -8,18 +8,35 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 <style>
-/* ─── CALENDAR + DATE NAV ADDITIONS ─── */
-.date-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px}
-.date-nav .date-label{font-size:.85rem;font-weight:500;color:var(--text);cursor:pointer;user-select:none;padding:6px 12px;border-radius:10px;transition:background .2s;text-align:center}
+/* ─── OVERRIDES for nav-toggle + desktop ─── */
+.app-shell{padding-bottom:calc(var(--nav-h,64px) + 1.5rem)}
+
+/* NAV BAR — buttons, not links */
+.nav-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(8,8,13,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.06);display:flex;z-index:100}
+.nav-bar button{flex:1;background:none;border:none;color:var(--dim);font-size:.65rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:color .2s;font-family:inherit;padding:10px 0;-webkit-tap-highlight-color:transparent}
+.nav-bar button .nav-icon{font-size:1.3rem;transition:transform .15s}
+.nav-bar button.active{color:var(--acc)}
+.nav-bar button:active .nav-icon{transform:scale(1.2)}
+
+/* SECTIONS — show/hide */
+.section{display:none;animation:fadeUp .3s ease}
+.section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* DATE NAV */
+.date-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px;gap:12px}
+.date-nav .date-label{font-size:.85rem;font-weight:500;color:var(--text);cursor:pointer;user-select:none;padding:8px 16px;border-radius:10px;transition:background .2s;text-align:center;flex:1}
 .date-nav .date-label:hover{background:var(--card)}
 .date-nav .date-label .today-badge{font-size:.6rem;color:var(--acc);margin-left:6px;font-weight:600}
-.date-arrow{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;flex-shrink:0}
-.date-arrow:hover{background:var(--gold-dim,rgba(245,200,66,.15));border-color:var(--acc)}
+.date-arrow{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all .2s;flex-shrink:0}
+.date-arrow:hover{background:rgba(245,200,66,.15);border-color:var(--acc)}
+.date-arrow:active{transform:scale(.92)}
+.readonly-banner{background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:.8rem;color:var(--acc);text-align:center}
 
-/* Calendar Overlay */
+/* CALENDAR */
 .cal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-end;justify-content:center}
 .cal-overlay.open{display:flex}
-.cal-popup{background:var(--bg);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius) var(--radius) 0 0;padding:20px;width:100%;max-width:400px;animation:slideUp .3s ease}
+.cal-popup{background:var(--bg);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius) var(--radius) 0 0;padding:20px;width:100%;max-width:420px;animation:slideUp .3s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .cal-header .cal-title{font-size:1rem;font-weight:600;text-transform:capitalize}
@@ -43,10 +60,29 @@
 .cal-dots .dot-refl{background:var(--acc2)}
 .cal-today-btn{margin-top:16px;width:100%;padding:10px;border:1px solid var(--acc);border-radius:10px;background:transparent;color:var(--acc);font-weight:600;font-size:.85rem;cursor:pointer;font-family:inherit}
 .cal-today-btn:hover{background:rgba(245,200,66,.15)}
-.readonly-banner{background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:.8rem;color:var(--acc);text-align:center}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:24px 16px;color:var(--dim)}
+.empty-state .empty-icon{font-size:2rem;margin-bottom:8px;opacity:.5}
+.empty-state p{font-size:.85rem;line-height:1.5}
+
+/* DESKTOP responsive */
 @media(min-width:600px){
+  .app-shell{max-width:560px;margin:0 auto;padding-left:1.5rem;padding-right:1.5rem}
+  .nav-bar{max-width:560px;left:50%;transform:translateX(-50%);border-radius:16px 16px 0 0}
   .cal-popup{border-radius:var(--radius);margin-bottom:20px}
   .cal-overlay{align-items:center}
+}
+@media(min-width:900px){
+  .app-shell{max-width:720px;padding:0 2rem 0}
+  .nav-bar{max-width:640px}
+  .stat-grid{grid-template-columns:repeat(4,1fr);gap:16px}
+  .stat-num{font-size:2rem}
+  .section{padding:1.5rem}
+}
+@media(min-width:1200px){
+  .app-shell{max-width:860px}
+  .nav-bar{max-width:700px}
 }
 </style>
 </head>
@@ -60,27 +96,25 @@
 
   <!-- Date Navigation -->
   <div class="date-nav">
-    <button class="date-arrow" onclick="navigateDate(-1)" title="Dia anterior">◀</button>
+    <button class="date-arrow" id="btn-prev" title="Dia anterior">◀</button>
     <div class="date-label" id="date-label" onclick="openCalendar()">
       <span id="date-text"></span>
       <span class="today-badge" id="today-badge" style="display:none">Hoje</span>
     </div>
-    <button class="date-arrow" onclick="navigateDate(1)" title="Próximo dia">▶</button>
+    <button class="date-arrow" id="btn-next" title="Próximo dia">▶</button>
   </div>
 
-  <!-- Readonly Banner -->
   <div class="readonly-banner" id="readonly-banner" style="display:none">
     📖 Visualizando dia passado
   </div>
 
-  <!-- Focus Banner -->
   <div class="focus-banner" id="focus-banner" style="display:none">
-    <div class="focus-label">🎯 Seu foco de hoje</div>
+    <div class="focus-label">🎯 Seu foco</div>
     <div class="focus-text" id="focus-text"></div>
   </div>
 
-  <!-- Gratitude Section -->
-  <div class="section" id="sec-gratitude">
+  <!-- ☀️ MANHÃ -->
+  <div class="section active" id="sec-gratitude">
     <div class="section-header">
       <h2>🙏 Gratidão</h2>
       <span class="done-badge" id="grat-done" style="display:none">✓ Salvo</span>
@@ -95,7 +129,6 @@
     </div>
   </div>
 
-  <!-- Focus Section -->
   <div class="section" id="sec-focus">
     <div class="section-header">
       <h2>🎯 Foco do Dia</h2>
@@ -103,7 +136,7 @@
     <input type="text" id="focus-input" class="focus-input" placeholder="Hoje estou focado(a) em..." maxlength="280">
   </div>
 
-  <!-- Tasks Section -->
+  <!-- 📋 DIA -->
   <div class="section" id="sec-tasks">
     <div class="section-header">
       <h2>📋 Tarefas</h2>
@@ -121,7 +154,7 @@
     </div>
   </div>
 
-  <!-- Evening Reflection -->
+  <!-- 🌙 NOITE -->
   <div class="section" id="sec-reflection">
     <div class="section-header">
       <h2>🌙 Reflexão Noturna</h2>
@@ -139,18 +172,20 @@
     </div>
   </div>
 
-  <!-- Save All Button -->
+  <!-- SAVE -->
   <button class="btn-primary" style="margin-bottom:1.5rem" onclick="saveAll()">💾 Salvar Tudo</button>
   <div id="save-msg" style="text-align:center;color:var(--green);min-height:1.5rem;margin-top:0.5rem"></div>
 </div>
 
-<!-- Nav Bar -->
-<nav class="nav-bar">
-  <a href="/app" class="active"><span class="nav-icon">🏠</span>Hoje</a>
-  <a href="/timeline"><span class="nav-icon">📖</span>Timeline</a>
+<!-- NAV BAR -->
+<nav class="nav-bar" id="nav">
+  <button class="active" data-sec="sec-gratitude"><span class="nav-icon">☀️</span>Manhã</button>
+  <button data-sec="sec-focus"><span class="nav-icon">🎯</span>Foco</button>
+  <button data-sec="sec-tasks"><span class="nav-icon">📋</span>Dia</button>
+  <button data-sec="sec-reflection"><span class="nav-icon">🌙</span>Noite</button>
 </nav>
 
-<!-- Calendar Overlay -->
+<!-- CALENDAR -->
 <div class="cal-overlay" id="cal-overlay">
   <div class="cal-popup">
     <div class="cal-header">
@@ -171,303 +206,232 @@
 </div>
 
 <script>
-  let currentMood = 'neutro';
-  let currentDate = new Date().toISOString().slice(0,10);
-  let calendarMonth = new Date();
-  let calendarData = {};
+let currentMood='neutro';
+let currentDate=new Date().toISOString().slice(0,10);
+let calendarMonth=new Date();
+let calendarData={};
 
-  function todayStr(){ return new Date().toISOString().slice(0,10); }
-  function fmtDate(s){
-    const d=new Date(s+'T12:00:00');
-    return d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  }
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function fmtDate(s){
+  const d=new Date(s+'T12:00:00');
+  return d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
 
-  /* ─── DATE NAV ─── */
-  function updateDateLabel(){
-    const isToday = currentDate === todayStr();
-    document.getElementById('date-text').textContent = fmtDate(currentDate);
-    document.getElementById('today-badge').style.display = isToday ? 'inline' : 'none';
-    document.getElementById('readonly-banner').style.display = (currentDate < todayStr()) ? '' : 'none';
-  }
-
-  function navigateDate(delta){
-    const d = new Date(currentDate+'T12:00:00');
-    d.setDate(d.getDate()+delta);
-    currentDate = d.toISOString().slice(0,10);
-    updateDateLabel();
-    loadDay();
-    // Update calendar month if needed
-    const newMonth = new Date(d.getFullYear(), d.getMonth(), 1);
-    if(newMonth.getMonth()!==calendarMonth.getMonth()||newMonth.getFullYear()!==calendarMonth.getFullYear()){
-      calendarMonth = newMonth;
-      renderCalendar();
-    }
-  }
-
-  function goToday(){
-    currentDate = todayStr();
-    updateDateLabel();
-    loadDay();
-    closeCalendar();
-  }
-
-  /* ─── CALENDAR ─── */
-  async function loadCalendarData(){
-    try {
-      const res = await fetch(`/api/calendar?month=${calendarMonth.getFullYear()}-${String(calendarMonth.getMonth()+1).padStart(2,'0')}`);
-      const data = await res.json();
-      calendarData = {};
-      (data.days||[]).forEach(d=>{ calendarData[d.date] = d; });
-      renderCalendar();
-    } catch(e){ /* offline or error */ }
-  }
-
-  function openCalendar(){
-    calendarMonth = new Date(currentDate+'T12:00:00');
-    loadCalendarData();
-    document.getElementById('cal-overlay').classList.add('open');
-  }
-  function closeCalendar(){
-    document.getElementById('cal-overlay').classList.remove('open');
-  }
-  document.getElementById('cal-overlay').addEventListener('click',e=>{
-    if(e.target===e.currentTarget) closeCalendar();
+/* ─── NAV — toggle sections ─── */
+document.querySelectorAll('#nav button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('#nav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById(btn.dataset.sec).classList.add('active');
   });
+});
 
-  function calNav(dir){
-    calendarMonth.setMonth(calendarMonth.getMonth()+dir);
-    loadCalendarData();
+/* ─── DATE NAV ─── */
+function updateDateLabel(){
+  const isToday=currentDate===todayStr();
+  document.getElementById('date-text').textContent=fmtDate(currentDate);
+  document.getElementById('today-badge').style.display=isToday?'inline':'none';
+  document.getElementById('readonly-banner').style.display=(currentDate<todayStr())?'':'none';
+}
+
+function navigateDate(delta){
+  const d=new Date(currentDate+'T12:00:00');
+  d.setDate(d.getDate()+delta);
+  currentDate=d.toISOString().slice(0,10);
+  updateDateLabel();loadDay();
+  const nm=new Date(d.getFullYear(),d.getMonth(),1);
+  if(nm.getMonth()!==calendarMonth.getMonth()||nm.getFullYear()!==calendarMonth.getFullYear()){
+    calendarMonth=nm;loadCalendarData();
   }
+}
 
-  function renderCalendar(){
-    const year = calendarMonth.getFullYear();
-    const month = calendarMonth.getMonth();
-    document.getElementById('cal-title').textContent = calendarMonth.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+document.getElementById('btn-prev').addEventListener('click',()=>navigateDate(-1));
+document.getElementById('btn-next').addEventListener('click',()=>navigateDate(1));
 
-    const firstDay = new Date(year,month,1).getDay();
-    const daysInMonth = new Date(year,month+1,0).getDate();
-    const daysInPrev = new Date(year,month,0).getDate();
+function goToday(){currentDate=todayStr();updateDateLabel();loadDay();closeCalendar()}
 
-    const container = document.getElementById('cal-days');
-    container.innerHTML = '';
+/* ─── CALENDAR ─── */
+async function loadCalendarData(){
+  try{
+    const res=await fetch(`/api/calendar?month=${calendarMonth.getFullYear()}-${String(calendarMonth.getMonth()+1).padStart(2,'0')}`);
+    const data=await res.json();
+    calendarData={};
+    (data.days||[]).forEach(d=>{calendarData[d.date]=d});
+    renderCalendar();
+  }catch(e){}
+}
 
-    for(let i=firstDay-1;i>=0;i--){
-      const btn = document.createElement('button');
-      btn.className='cal-day other-month'; btn.textContent=daysInPrev-i; btn.disabled=true;
-      container.appendChild(btn);
+function openCalendar(){
+  calendarMonth=new Date(currentDate+'T12:00:00');
+  loadCalendarData();document.getElementById('cal-overlay').classList.add('open');
+}
+function closeCalendar(){document.getElementById('cal-overlay').classList.remove('open')}
+document.getElementById('cal-overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeCalendar()});
+function calNav(dir){calendarMonth.setMonth(calendarMonth.getMonth()+dir);loadCalendarData()}
+
+function renderCalendar(){
+  const year=calendarMonth.getFullYear(),month=calendarMonth.getMonth();
+  document.getElementById('cal-title').textContent=calendarMonth.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const daysInPrev=new Date(year,month,0).getDate();
+  const container=document.getElementById('cal-days');
+  container.innerHTML='';
+  for(let i=firstDay-1;i>=0;i--){
+    const btn=document.createElement('button');btn.className='cal-day other-month';btn.textContent=daysInPrev-i;btn.disabled=true;container.appendChild(btn);
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const btn=document.createElement('button');btn.className='cal-day';btn.textContent=d;
+    if(ds===todayStr())btn.classList.add('today');
+    if(ds===currentDate)btn.classList.add('selected');
+    const info=calendarData[ds];
+    if(info){
+      const dots=document.createElement('div');dots.className='cal-dots';
+      if(info.has_gratitude)dots.innerHTML+='<span class="dot-grat"></span>';
+      if(info.has_tasks)dots.innerHTML+='<span class="dot-tasks"></span>';
+      if(info.has_reflection)dots.innerHTML+='<span class="dot-refl"></span>';
+      btn.appendChild(dots);
     }
-
-    for(let d=1;d<=daysInMonth;d++){
-      const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const btn=document.createElement('button');
-      btn.className='cal-day'; btn.textContent=d;
-      if(ds===todayStr()) btn.classList.add('today');
-      if(ds===currentDate) btn.classList.add('selected');
-
-      const info=calendarData[ds];
-      if(info){
-        const dots=document.createElement('div'); dots.className='cal-dots';
-        if(info.has_gratitude) dots.innerHTML+='<span class="dot-grat"></span>';
-        if(info.has_tasks) dots.innerHTML+='<span class="dot-tasks"></span>';
-        if(info.has_reflection) dots.innerHTML+='<span class="dot-refl"></span>';
-        btn.appendChild(dots);
-      }
-      btn.addEventListener('click',()=>{
-        currentDate=ds; updateDateLabel(); loadDay(); closeCalendar();
-      });
-      container.appendChild(btn);
-    }
-
-    const totalCells=container.children.length;
-    const remaining=(7-(totalCells%7))%7;
-    for(let i=1;i<=remaining;i++){
-      const btn=document.createElement('button');
-      btn.className='cal-day other-month'; btn.textContent=i; btn.disabled=true;
-      container.appendChild(btn);
-    }
+    btn.addEventListener('click',()=>{currentDate=ds;updateDateLabel();loadDay();closeCalendar()});
+    container.appendChild(btn);
   }
-
-  /* ─── LOAD DAY ─── */
-  async function loadDay(){
-    const [grat, foc, tasks, ref] = await Promise.all([
-      fetch(`/api/gratitude/${currentDate}`).then(r=>r.json()),
-      fetch(`/api/focus/${currentDate}`).then(r=>r.json()),
-      fetch(`/api/tasks/${currentDate}`).then(r=>r.json()),
-      fetch(`/api/reflection/${currentDate}`).then(r=>r.json())
-    ]);
-
-    if(grat){
-      document.getElementById('g1').value=grat.item1||'';
-      document.getElementById('g2').value=grat.item2||'';
-      document.getElementById('g3').value=grat.item3||'';
-      document.getElementById('grat-done').style.display='inline';
-    } else {
-      document.getElementById('g1').value='';
-      document.getElementById('g2').value='';
-      document.getElementById('g3').value='';
-      document.getElementById('grat-done').style.display='none';
-    }
-
-    if(foc){
-      document.getElementById('focus-input').value=foc.focus_text;
-      document.getElementById('focus-banner').style.display='block';
-      document.getElementById('focus-text').textContent=foc.focus_text;
-    } else {
-      document.getElementById('focus-input').value='';
-      document.getElementById('focus-banner').style.display='none';
-    }
-
-    renderTasks(tasks);
-
-    if(ref){
-      document.getElementById('extra-wins').value=ref.extra_wins||'';
-      document.getElementById('reflection-text').value=ref.reflection_text||'';
-      setMoodByValue(ref.mood);
-      document.getElementById('ref-done').style.display='inline';
-    } else {
-      document.getElementById('extra-wins').value='';
-      document.getElementById('reflection-text').value='';
-      setMoodByValue('neutro');
-      document.getElementById('ref-done').style.display='none';
-    }
-
-    updateRefStats(tasks);
+  const totalCells=container.children.length;
+  const remaining=(7-(totalCells%7))%7;
+  for(let i=1;i<=remaining;i++){
+    const btn=document.createElement('button');btn.className='cal-day other-month';btn.textContent=i;btn.disabled=true;container.appendChild(btn);
   }
+}
 
-  function renderTasks(tasks){
-    const list=document.getElementById('task-list');
-    const done=tasks.filter(t=>t.done).length;
-    document.getElementById('tasks-count').textContent=`${done}/${tasks.length}`;
-    if(!tasks.length){
-      list.innerHTML='<div style="text-align:center;padding:24px;color:var(--dim);font-size:.85rem">📋 Nenhuma tarefa para este dia</div>';
-      return;
-    }
-    list.innerHTML=tasks.map(t=>`
-      <li class="task-item">
-        <button class="task-check ${t.done?'done':''}" onclick="toggleTask(${t.id})">${t.done?'✓':''}</button>
-        <span class="task-title ${t.done?'done':''}">${esc(t.title)}</span>
-        <span class="task-priority ${t.priority}">${t.priority}</span>
-        <button class="task-del" onclick="delTask(${t.id})">✕</button>
-      </li>
-    `).join('');
-  }
+/* ─── LOAD DAY ─── */
+async function loadDay(){
+  const [grat,foc,tasks,ref]=await Promise.all([
+    fetch(`/api/gratitude/${currentDate}`).then(r=>r.json()),
+    fetch(`/api/focus/${currentDate}`).then(r=>r.json()),
+    fetch(`/api/tasks/${currentDate}`).then(r=>r.json()),
+    fetch(`/api/reflection/${currentDate}`).then(r=>r.json())
+  ]);
 
-  function updateRefStats(tasks){
-    if(!tasks.length){document.getElementById('ref-stats').innerHTML='';return;}
-    const done=tasks.filter(t=>t.done).length;
-    document.getElementById('ref-stats').innerHTML=
-      `Tarefas: <strong>${done}</strong> de <strong>${tasks.length}</strong> concluídas`;
-  }
-
-  async function addTask(){
-    const input=document.getElementById('new-task');
-    const title=input.value.trim();
-    if(!title) return;
-    const priority=document.getElementById('new-priority').value;
-    await fetch('/api/tasks',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({title,priority,date:currentDate})
-    });
-    input.value='';
-    const tasks=await fetch(`/api/tasks/${currentDate}`).then(r=>r.json());
-    renderTasks(tasks);
-    updateRefStats(tasks);
-    loadCalendarData(); // refresh dots
-  }
-
-  document.getElementById('new-task').addEventListener('keydown',e=>{if(e.key==='Enter')addTask();});
-
-  async function toggleTask(id){
-    await fetch(`/api/tasks/${id}/toggle`,{method:'PATCH'});
-    const tasks=await fetch(`/api/tasks/${currentDate}`).then(r=>r.json());
-    renderTasks(tasks);
-    updateRefStats(tasks);
-  }
-
-  async function delTask(id){
-    await fetch(`/api/tasks/${id}`,{method:'DELETE'});
-    const tasks=await fetch(`/api/tasks/${currentDate}`).then(r=>r.json());
-    renderTasks(tasks);
-    updateRefStats(tasks);
-    loadCalendarData();
-  }
-
-  function setMood(btn){
-    document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-    currentMood=btn.dataset.mood;
-  }
-  function setMoodByValue(val){
-    currentMood=val||'neutro';
-    document.querySelectorAll('.mood-btn').forEach(b=>{
-      b.classList.toggle('selected',b.dataset.mood===currentMood);
-    });
-  }
-
-  async function saveAll(){
-    const msg=document.getElementById('save-msg');
-    await Promise.all([
-      fetch('/api/gratitude',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          item1:document.getElementById('g1').value,
-          item2:document.getElementById('g2').value,
-          item3:document.getElementById('g3').value,
-          date:currentDate
-        })
-      }),
-      fetch('/api/focus',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({focus_text:document.getElementById('focus-input').value,date:currentDate})
-      }),
-      fetch('/api/reflection',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          extra_wins:document.getElementById('extra-wins').value,
-          reflection_text:document.getElementById('reflection-text').value,
-          mood:currentMood,
-          tasks_completed:parseInt(document.getElementById('tasks-count').textContent)||0,
-          tasks_total:parseInt(document.getElementById('tasks-count').textContent.split('/')[1])||0,
-          date:currentDate
-        })
-      })
-    ]);
-
-    msg.textContent='✨ Tudo salvo!';
-    setTimeout(()=>msg.textContent='',3000);
-
-    const foc=await fetch(`/api/focus/${currentDate}`).then(r=>r.json());
-    if(foc){
-      document.getElementById('focus-banner').style.display='block';
-      document.getElementById('focus-text').textContent=foc.focus_text;
-    }
+  if(grat){
+    document.getElementById('g1').value=grat.item1||'';
+    document.getElementById('g2').value=grat.item2||'';
+    document.getElementById('g3').value=grat.item3||'';
     document.getElementById('grat-done').style.display='inline';
+  }else{
+    document.getElementById('g1').value='';document.getElementById('g2').value='';document.getElementById('g3').value='';
+    document.getElementById('grat-done').style.display='none';
+  }
+
+  if(foc){
+    document.getElementById('focus-input').value=foc.focus_text;
+    document.getElementById('focus-banner').style.display='block';
+    document.getElementById('focus-text').textContent=foc.focus_text;
+  }else{
+    document.getElementById('focus-input').value='';
+    document.getElementById('focus-banner').style.display='none';
+  }
+
+  renderTasks(tasks);
+
+  if(ref){
+    document.getElementById('extra-wins').value=ref.extra_wins||'';
+    document.getElementById('reflection-text').value=ref.reflection_text||'';
+    setMoodByValue(ref.mood);
     document.getElementById('ref-done').style.display='inline';
-    loadCalendarData();
+  }else{
+    document.getElementById('extra-wins').value='';document.getElementById('reflection-text').value='';
+    setMoodByValue('neutro');document.getElementById('ref-done').style.display='none';
   }
 
-  async function doLogout(){
-    await fetch('/api/auth/logout',{method:'POST'});
-    window.location.href='/';
+  updateRefStats(tasks);
+}
+
+function renderTasks(tasks){
+  const list=document.getElementById('task-list');
+  const done=tasks.filter(t=>t.done).length;
+  document.getElementById('tasks-count').textContent=`${done}/${tasks.length}`;
+  if(!tasks.length){
+    list.innerHTML='<div class="empty-state"><div class="empty-icon">📋</div><p>Nenhuma tarefa para este dia</p></div>';
+    return;
   }
+  list.innerHTML=tasks.map(t=>`
+    <li class="task-item">
+      <button class="task-check ${t.done?'done':''}" onclick="toggleTask(${t.id})">${t.done?'✓':''}</button>
+      <span class="task-title ${t.done?'done':''}">${esc(t.title)}</span>
+      <span class="task-priority ${t.priority}">${t.priority}</span>
+      <button class="task-del" onclick="delTask(${t.id})">✕</button>
+    </li>
+  `).join('');
+}
 
-  function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function updateRefStats(tasks){
+  if(!tasks.length){document.getElementById('ref-stats').innerHTML='';return}
+  const done=tasks.filter(t=>t.done).length;
+  document.getElementById('ref-stats').innerHTML=`Tarefas: <strong>${done}</strong> de <strong>${tasks.length}</strong> concluídas`;
+}
 
-  /* ─── KEYBOARD SHORTCUTS ─── */
-  document.addEventListener('keydown',e=>{
-    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
-    if(e.key==='ArrowLeft') navigateDate(-1);
-    if(e.key==='ArrowRight') navigateDate(1);
-    if(e.key==='t'||e.key==='T') goToday();
-  });
+async function addTask(){
+  const input=document.getElementById('new-task');
+  const title=input.value.trim();if(!title)return;
+  const priority=document.getElementById('new-priority').value;
+  await fetch('/api/tasks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title,priority,date:currentDate})});
+  input.value='';
+  const tasks=await fetch(`/api/tasks/${currentDate}`).then(r=>r.json());
+  renderTasks(tasks);updateRefStats(tasks);loadCalendarData();
+}
 
-  /* ─── INIT ─── */
-  updateDateLabel();
-  loadDay();
+document.getElementById('new-task').addEventListener('keydown',e=>{if(e.key==='Enter')addTask()});
+
+async function toggleTask(id){
+  await fetch(`/api/tasks/${id}/toggle`,{method:'PATCH'});
+  const tasks=await fetch(`/api/tasks/${currentDate}`).then(r=>r.json());
+  renderTasks(tasks);updateRefStats(tasks);
+}
+
+async function delTask(id){
+  await fetch(`/api/tasks/${id}`,{method:'DELETE'});
+  const tasks=await fetch(`/api/tasks/${currentDate}`).then(r=>r.json());
+  renderTasks(tasks);updateRefStats(tasks);loadCalendarData();
+}
+
+function setMood(btn){
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');currentMood=btn.dataset.mood;
+}
+function setMoodByValue(val){
+  currentMood=val||'neutro';
+  document.querySelectorAll('.mood-btn').forEach(b=>{b.classList.toggle('selected',b.dataset.mood===currentMood)});
+}
+
+async function saveAll(){
+  const msg=document.getElementById('save-msg');
+  await Promise.all([
+    fetch('/api/gratitude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item1:document.getElementById('g1').value,item2:document.getElementById('g2').value,item3:document.getElementById('g3').value,date:currentDate})}),
+    fetch('/api/focus',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({focus_text:document.getElementById('focus-input').value,date:currentDate})}),
+    fetch('/api/reflection',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({extra_wins:document.getElementById('extra-wins').value,reflection_text:document.getElementById('reflection-text').value,mood:currentMood,tasks_completed:parseInt(document.getElementById('tasks-count').textContent)||0,tasks_total:parseInt(document.getElementById('tasks-count').textContent.split('/')[1])||0,date:currentDate})})
+  ]);
+  msg.textContent='✨ Tudo salvo!';setTimeout(()=>msg.textContent='',3000);
+  const foc=await fetch(`/api/focus/${currentDate}`).then(r=>r.json());
+  if(foc){document.getElementById('focus-banner').style.display='block';document.getElementById('focus-text').textContent=foc.focus_text}
+  document.getElementById('grat-done').style.display='inline';
+  document.getElementById('ref-done').style.display='inline';
+  loadCalendarData();
+}
+
+async function doLogout(){await fetch('/api/auth/logout',{method:'POST'});window.location.href='/'}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+/* ─── KEYBOARD ─── */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='ArrowLeft')navigateDate(-1);
+  if(e.key==='ArrowRight')navigateDate(1);
+  if(e.key==='t'||e.key==='T')goToday();
+});
+
+/* ─── INIT ─── */
+updateDateLabel();loadDay();
 </script>
 </body>
 </html>
