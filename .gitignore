@@ -10,3 +10,6 @@ build_pptx.py
 build_pptx_v2.py
 pitch-spec.json
 pitch-foco.pptx
+data.db
+data.db-wal
+data.db-shm

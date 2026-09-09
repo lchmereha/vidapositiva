@@ -2,35 +2,29 @@ const express = require('express');
 const db = require('../db');
 const router = express.Router();
 
-// GET gratidão de hoje
-router.get('/today', async (req, res) => {
+router.get('/today', (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
-  const [rows] = await db.execute(
-    'SELECT * FROM gratitude WHERE user_id = ? AND date = ?',
-    [req.session.userId, today]
-  );
-  res.json(rows[0] || null);
+  const row = db.prepare(
+    'SELECT * FROM gratitude WHERE user_id = ? AND date = ?'
+  ).get(req.session.userId, today);
+  res.json(row || null);
 });
 
-// UPSERT gratidão
-router.post('/', async (req, res) => {
+router.post('/', (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
   const { item1, item2, item3 } = req.body;
-  await db.execute(
+  db.prepare(
     `INSERT INTO gratitude (user_id, date, item1, item2, item3)
      VALUES (?, ?, ?, ?, ?)
-     ON DUPLICATE KEY UPDATE item1=VALUES(item1), item2=VALUES(item2), item3=VALUES(item3)`,
-    [req.session.userId, today, item1, item2, item3]
-  );
+     ON CONFLICT(user_id, date) DO UPDATE SET item1=excluded.item1, item2=excluded.item2, item3=excluded.item3`
+  ).run(req.session.userId, today, item1, item2, item3);
   res.json({ ok: true });
 });
 
-// GET streak de gratidão
-router.get('/streak', async (req, res) => {
-  const [rows] = await db.execute(
-    `SELECT date FROM gratitude WHERE user_id = ? ORDER BY date DESC`,
-    [req.session.userId]
-  );
+router.get('/streak', (req, res) => {
+  const rows = db.prepare(
+    'SELECT date FROM gratitude WHERE user_id = ? ORDER BY date DESC'
+  ).all(req.session.userId);
   let streak = 0;
   let expected = new Date();
   for (const row of rows) {

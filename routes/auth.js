@@ -10,17 +10,17 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Preencha todos os campos' });
     }
     const hash = await bcrypt.hash(password, 10);
-    const [result] = await db.execute(
-      'INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)',
-      [name, email, hash]
-    );
-    req.session.userId = result.insertId;
+    const result = db.prepare(
+      'INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)'
+    ).run(name, email, hash);
+    req.session.userId = result.lastInsertRowid;
     req.session.userName = name;
     res.json({ ok: true });
   } catch (err) {
-    if (err.code === 'ER_DUP_ENTRY') {
+    if (err.message && err.message.includes('UNIQUE constraint')) {
       return res.status(400).json({ error: 'E-mail já cadastrado' });
     }
+    console.error('Register error:', err);
     res.status(500).json({ error: 'Erro interno' });
   }
 });
@@ -28,11 +28,10 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
-    if (rows.length === 0) {
+    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    if (!user) {
       return res.status(401).json({ error: 'E-mail ou senha inválidos' });
     }
-    const user = rows[0];
     const ok = await bcrypt.compare(password, user.password_hash);
     if (!ok) {
       return res.status(401).json({ error: 'E-mail ou senha inválidos' });
@@ -41,6 +40,7 @@ router.post('/login', async (req, res) => {
     req.session.userName = user.name;
     res.json({ ok: true, name: user.name });
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ error: 'Erro interno' });
   }
 });

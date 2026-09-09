@@ -2,24 +2,22 @@ const express = require('express');
 const db = require('../db');
 const router = express.Router();
 
-router.get('/today', async (req, res) => {
+router.get('/today', (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
-  const [rows] = await db.execute(
-    'SELECT * FROM focus WHERE user_id = ? AND date = ?',
-    [req.session.userId, today]
-  );
-  res.json(rows[0] || null);
+  const row = db.prepare(
+    'SELECT * FROM focus WHERE user_id = ? AND date = ?'
+  ).get(req.session.userId, today);
+  res.json(row || null);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
   const { focus_text } = req.body;
-  await db.execute(
+  db.prepare(
     `INSERT INTO focus (user_id, date, focus_text)
      VALUES (?, ?, ?)
-     ON DUPLICATE KEY UPDATE focus_text=VALUES(focus_text)`,
-    [req.session.userId, today, focus_text]
-  );
+     ON CONFLICT(user_id, date) DO UPDATE SET focus_text=excluded.focus_text`
+  ).run(req.session.userId, today, focus_text);
   res.json({ ok: true });
 });
 
